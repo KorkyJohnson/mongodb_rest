@@ -1,34 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Fruit</title>
+    <title>Add and Query Fruit</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Add Fruit</h1>
+    <h1>Add and Query Fruit</h1>
     <div>
-        <label for="jsonString">JSON String:</label>
-        <input type="text" id="jsonString" name="jsonString">
+        <h2>Add Fruit</h2>
+        <label for="addJsonString">Enter JSON String:</label>
+        <input type="text" id="addJsonString" name="addJsonString">
+        <button onclick="saveFruit()">Save Fruit</button>
     </div>
-    <button onclick="saveFruit()">Save</button>
+    <div>
+        <h2>Query Fruit</h2>
+        <label for="queryJsonString">Enter JSON String:</label>
+        <input type="text" id="queryJsonString" name="queryJsonString">
+        <button onclick="queryFruit()">Get Record</button>
+    </div>
+    <div>
+        <h2>Result:</h2>
+        <textarea id="result" readonly rows="5" cols="50"></textarea>
+    </div>
 
     <script>
         function saveFruit() {
-            var jsonString = document.getElementById("jsonString").value;
+            var addJsonString = document.getElementById("addJsonString").value;
 
             // Send the JSON string to the backend Java service via HTTP POST
             $.ajax({
                 type: "POST",
                 url: "/fruits",
                 contentType: "application/json",
-                data: jsonString,
+                data: addJsonString,
                 success: function () {
                     // Handle success, if needed
-                    console.log("JSON string saved successfully!");
+                    console.log("Fruit saved successfully!");
                 },
                 error: function (error) {
                     // Handle error, if needed
-                    console.error("Error saving JSON string:", error);
+                    console.error("Error saving fruit:", error);
+                }
+            });
+        }
+
+        function queryFruit() {
+            var queryJsonString = document.getElementById("queryJsonString").value;
+
+            // Send the JSON string to the backend Java service via HTTP GET
+            $.ajax({
+                type: "GET",
+                url: "/fruits/queryByKeyValue",
+                data: {json: queryJsonString},
+                success: function (response) {
+                    // Update the result textarea with the fetched list
+                    var resultTextArea = document.getElementById("result");
+                    resultTextArea.value = JSON.stringify(response, null, 2);
+                },
+                error: function (error) {
+                    // Handle error, if needed
+                    console.error("Error fetching record:", error);
                 }
             });
         }
