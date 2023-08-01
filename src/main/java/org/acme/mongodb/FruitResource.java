@@ -21,8 +21,14 @@ public class FruitResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addFruitJson(String json) {
-        fruitService.addJsonToMongoDB(json, "fruits");
+    public Response addFruitJson(String json) {
+        boolean added = fruitService.addJsonToMongoDB(json, "fruits");
+
+        if (added) {
+            return Response.ok("Fruit added successfully", MediaType.TEXT_PLAIN).build();
+        } else {
+            return Response.serverError().entity("Error adding the fruit").build();
+        }
     }
 
     @GET

@@ -34,9 +34,15 @@ public class FruitService {
     MongoClient mongoClient;
 
     // Create
-    public void addJsonToMongoDB(String json, String collectionName) {
-        Document document = Document.parse(json);
-        getCollection(collectionName).insertOne(document);
+    public boolean addJsonToMongoDB(String json, String collectionName) {
+        try {
+            Document document = Document.parse(json);
+            getCollection(collectionName).insertOne(document);
+            return true; // Successfully added the document
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Failed to add the document
+        }
     }
 
     // Read
